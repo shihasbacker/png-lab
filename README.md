@@ -1,5 +1,7 @@
 # PNG Lab
 
+[Live demo](https://shihasbacker.github.io/png-lab/)
+
 PNG Lab is a browser-only image converter with a dark, studio-style interface.
 
 Drop in a raster image or SVG, preview it locally, and export it as a PNG without sending anything to a server.
