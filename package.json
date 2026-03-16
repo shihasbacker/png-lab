@@ -1,0 +1,14 @@
+{
+  "name": "image-converter-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @image-converter/web",
+    "build": "npm run build --workspace @image-converter/web",
+    "preview": "npm run preview --workspace @image-converter/web"
+  }
+}
