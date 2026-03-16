@@ -18,6 +18,11 @@ body,
   margin: 0;
 }
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
 body {
   min-height: 100vh;
 }
