@@ -249,7 +249,7 @@ export function App() {
         </section>
 
         <aside className="workspace__controls">
-          <Panel eyebrow="Input" title="Upload">
+          <Panel eyebrow="Input" glow={false} title="Upload">
             <UploadSurface
               accept={SUPPORTED_IMAGE_ACCEPT}
               disabled={isLoading}
@@ -268,7 +268,7 @@ export function App() {
             />
           </Panel>
 
-          <Panel eyebrow="Readout" title="Source details">
+          <Panel eyebrow="Readout" glow={false} title="Source details">
             {loadedImage ? (
               <div className="status-list">
                 {details.map((item) => (
@@ -280,27 +280,29 @@ export function App() {
             )}
           </Panel>
 
-          <Panel eyebrow="Output" title="Convert">
-            <div className="actions">
-              <ActionButton disabled={!loadedImage || isLoading || isConverting} onClick={() => void handleConvert()}>
-                {isConverting ? "Rendering PNG..." : "Convert to PNG"}
-              </ActionButton>
-              {download ? (
-                <p className="download-note">
-                  PNG exported as <strong>{download.fileName}</strong> ({download.sizeLabel}).
-                </p>
-              ) : (
-                <p className="download-note">The export downloads instantly after conversion.</p>
-              )}
-            </div>
-          </Panel>
-
-          {(errorMessage || isLoading) && (
-            <Panel eyebrow="Status" title={isLoading ? "Reading file" : "Needs attention"}>
-              {isLoading ? <p className="muted-copy">Decoding the source and preparing a preview stage.</p> : null}
-              {errorMessage ? <ErrorMessage message={errorMessage} /> : null}
+          <div className="workspace__output">
+            <Panel eyebrow="Output" glow={false} title="Convert">
+              <div className="actions">
+                <ActionButton disabled={!loadedImage || isLoading || isConverting} onClick={() => void handleConvert()}>
+                  {isConverting ? "Rendering PNG..." : "Convert to PNG"}
+                </ActionButton>
+                {download ? (
+                  <p className="download-note">
+                    PNG exported as <strong>{download.fileName}</strong> ({download.sizeLabel}).
+                  </p>
+                ) : (
+                  <p className="download-note">The export downloads instantly after conversion.</p>
+                )}
+              </div>
             </Panel>
-          )}
+
+            {(errorMessage || isLoading) && (
+              <Panel eyebrow="Status" glow={false} title={isLoading ? "Reading file" : "Needs attention"}>
+                {isLoading ? <p className="muted-copy">Decoding the source and preparing a preview stage.</p> : null}
+                {errorMessage ? <ErrorMessage message={errorMessage} /> : null}
+              </Panel>
+            )}
+          </div>
         </aside>
       </main>
     </div>

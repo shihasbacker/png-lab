@@ -2,6 +2,7 @@ import type { DragEventHandler, PropsWithChildren, ReactNode } from "react";
 
 type PanelProps = PropsWithChildren<{
   eyebrow?: string;
+  glow?: boolean;
   title: string;
 }>;
 
@@ -34,9 +35,9 @@ type UploadSurfaceProps = {
   onDrop?: DragEventHandler<HTMLDivElement>;
 };
 
-export function Panel({ children, eyebrow, title }: PanelProps) {
+export function Panel({ children, eyebrow, glow = true, title }: PanelProps) {
   return (
-    <section className="ic-panel">
+    <section className={`ic-panel${glow ? "" : " ic-panel--no-glow"}`}>
       <div className="ic-panel__header">
         {eyebrow ? <p className="ic-panel__eyebrow">{eyebrow}</p> : null}
         <h2 className="ic-panel__title">{title}</h2>

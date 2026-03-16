@@ -45,6 +45,10 @@ body {
   pointer-events: none;
 }
 
+.ic-panel--no-glow::after {
+  content: none;
+}
+
 .ic-panel__header,
 .ic-panel__body {
   position: relative;

@@ -149,10 +149,26 @@ img {
   min-width: 0;
 }
 
+.workspace__preview {
+  display: flex;
+}
+
+.workspace__preview > .ic-panel {
+  width: 100%;
+  min-height: 100%;
+}
+
 .workspace__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 100%;
+}
+
+.workspace__output {
   display: grid;
   gap: 1rem;
-  align-content: start;
+  margin-top: auto;
 }
 
 .preview-image {
