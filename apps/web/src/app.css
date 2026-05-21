@@ -159,7 +159,17 @@ img {
 .workspace__output {
   display: grid;
   gap: 1.5rem;
-  margin-top: auto;
+}
+
+.workspace__hint {
+  margin: 0;
+  color: var(--ic-text-muted);
+  font-size: 0.8125rem;
+  text-align: center;
+  line-height: 1.6;
+  padding: 1rem 0.5rem;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: var(--ic-radius-md);
 }
 
 .preview-image {
@@ -238,4 +248,103 @@ img {
   .empty-stage p {
     font-size: 0.875rem;
   }
+}
+
+/* ── Background removal progress bar ── */
+.bg-progress {
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.bg-progress__fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #a78bfa, #60a5fa);
+  transition: width 300ms ease;
+  min-width: 4px;
+}
+
+/* ── Re-download inline link button ── */
+.re-download-link {
+  display: inline;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ic-text-primary);
+  font-size: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 150ms ease;
+}
+
+.re-download-link:hover {
+  opacity: 0.7;
+}
+
+/* ── Inline Source Details ── */
+.preview-source-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ic-panel-border);
+  justify-content: center;
+}
+
+.preview-detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+  font-size: 0.75rem;
+}
+
+.preview-detail-label {
+  color: var(--ic-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.preview-detail-value {
+  color: var(--ic-text-secondary);
+}
+
+/* ── Privacy Badge ── */
+.privacy-badge {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--ic-radius-md);
+}
+
+.privacy-badge__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--ic-text-muted);
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.privacy-badge__content h4 {
+  margin: 0 0 0.375rem;
+  color: var(--ic-text-primary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.privacy-badge__content p {
+  margin: 0;
+  color: var(--ic-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }

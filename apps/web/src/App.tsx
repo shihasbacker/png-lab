@@ -33,14 +33,14 @@ const formatLabels: Record<SupportedInputFormat, string> = {
   webp: "WebP",
 };
 
-function makeFileName(name: string) {
+function makeFileName(name: string, suffix = "") {
   const trimmed = name
     .replace(/\.[^.]+$/, "")
     .replace(/[<>:"/\\|?*\u0000-\u001f]/g, "-")
     .replace(/\s+/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
-  return `${trimmed || "converted-image"}.png`;
+  return `${trimmed || "converted-image"}${suffix}.png`;
 }
 
 function formatSize(bytes: number) {
@@ -72,6 +72,12 @@ export function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [download, setDownload] = useState<DownloadState | null>(null);
 
+  // Background removal state
+  const [isRemovingBg, setIsRemovingBg] = useState(false);
+  const [bgProgress, setBgProgress] = useState<number | null>(null);
+  const [bgProgressLabel, setBgProgressLabel] = useState<string>("");
+  const [bgRemovedDownload, setBgRemovedDownload] = useState<DownloadState | null>(null);
+
   useEffect(() => {
     return () => {
       loadedImage?.revoke();
@@ -85,6 +91,14 @@ export function App() {
       }
     };
   }, [download]);
+
+  useEffect(() => {
+    return () => {
+      if (bgRemovedDownload) {
+        URL.revokeObjectURL(bgRemovedDownload.url);
+      }
+    };
+  }, [bgRemovedDownload]);
 
   const details = useMemo(() => {
     if (!loadedImage) {
@@ -110,6 +124,14 @@ export function App() {
       URL.revokeObjectURL(download.url);
       setDownload(null);
     }
+
+    // Reset bg removal state on new file
+    if (bgRemovedDownload) {
+      URL.revokeObjectURL(bgRemovedDownload.url);
+      setBgRemovedDownload(null);
+    }
+    setBgProgress(null);
+    setBgProgressLabel("");
 
     try {
       const nextLoaded = await loadSource(file);
@@ -202,6 +224,55 @@ export function App() {
     }
   }
 
+  async function handleRemoveBackground() {
+    if (!loadedImage) return;
+
+    setIsRemovingBg(true);
+    setErrorMessage(null);
+    setBgProgress(0);
+    setBgProgressLabel("Loading AI model…");
+    setBgRemovedDownload(null);
+
+    try {
+      // Lazy-load the library so it doesn't bloat the initial bundle
+      const { removeBackground } = await import("@imgly/background-removal");
+
+      const blob = await removeBackground(loadedImage.previewUrl, {
+        progress: (key: string, current: number, total: number) => {
+          const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+          setBgProgress(pct);
+
+          // Friendly labels for each model-loading stage
+          if (key.includes("fetch") || key.includes("load")) {
+            setBgProgressLabel(`Downloading AI model… ${pct}%`);
+          } else if (key.includes("compute") || key.includes("run")) {
+            setBgProgressLabel(`Removing background… ${pct}%`);
+          } else {
+            setBgProgressLabel(`Processing… ${pct}%`);
+          }
+        },
+      });
+
+      const url = URL.createObjectURL(blob);
+      const fileName = makeFileName(loadedImage.fileName, "-no-bg");
+
+      if (bgRemovedDownload) {
+        URL.revokeObjectURL(bgRemovedDownload.url);
+      }
+
+      setBgRemovedDownload({ fileName, sizeLabel: formatSize(blob.size), url });
+      triggerDownload(url, fileName);
+    } catch (error) {
+      setErrorMessage(getConversionErrorMessage(error));
+    } finally {
+      setIsRemovingBg(false);
+      setBgProgress(null);
+      setBgProgressLabel("");
+    }
+  }
+
+  const isBusy = isLoading || isConverting || isRemovingBg;
+
   return (
     <div className="app-shell">
       <div className="app-shell__glow app-shell__glow--top" />
@@ -232,7 +303,7 @@ export function App() {
             <PreviewFrame
               caption={
                 loadedImage
-                  ? `${loadedImage.width} × ${loadedImage.height} ${formatLabels[loadedImage.format]} source`
+                  ? ""
                   : "PNG, JPG, WebP, GIF, BMP, AVIF, and SVG are accepted."
               }
             >
@@ -245,6 +316,17 @@ export function App() {
                 </div>
               )}
             </PreviewFrame>
+            
+            {loadedImage && (
+              <div className="preview-source-details">
+                {details.map((item) => (
+                  <div key={item.label} className="preview-detail-item">
+                    <span className="preview-detail-label">{item.label}</span>
+                    <span className="preview-detail-value">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </Panel>
         </section>
 
@@ -268,31 +350,52 @@ export function App() {
             />
           </Panel>
 
-          <Panel eyebrow="Readout" glow={false} title="Source details">
-            {loadedImage ? (
-              <div className="status-list">
-                {details.map((item) => (
-                  <StatusRow key={item.label} label={item.label} value={item.value} />
-                ))}
-              </div>
-            ) : (
-              <p className="muted-copy">Load a single image or SVG to inspect dimensions and export it as PNG.</p>
-            )}
-          </Panel>
-
           <div className="workspace__output">
-            <Panel eyebrow="Output" glow={false} title="Convert">
+            {/* ── Actions ── */}
+            <Panel eyebrow="Output" glow={false} title="Actions">
               <div className="actions">
-                <ActionButton disabled={!loadedImage || isLoading || isConverting} onClick={() => void handleConvert()}>
-                  {isConverting ? "Rendering PNG..." : "Convert to PNG"}
+                <ActionButton 
+                  disabled={!loadedImage || isBusy} 
+                  onClick={() => void handleConvert()}
+                  title={!loadedImage ? "Please upload an image first." : undefined}
+                >
+                  {isConverting ? "Rendering PNG…" : "Convert to PNG"}
                 </ActionButton>
-                {download ? (
+                {download && (
                   <p className="download-note">
                     PNG exported as <strong>{download.fileName}</strong> ({download.sizeLabel}).
                   </p>
-                ) : (
-                  <p className="download-note">The export downloads instantly after conversion.</p>
                 )}
+
+                <ActionButton
+                  disabled={!loadedImage || isBusy || loadedImage?.format === "svg"}
+                  onClick={() => void handleRemoveBackground()}
+                  title={!loadedImage ? "Please upload an image first." : loadedImage?.format === "svg" ? "Background removal is not supported for SVGs." : undefined}
+                >
+                  {isRemovingBg ? bgProgressLabel || "Processing…" : "Remove Background"}
+                </ActionButton>
+
+                {isRemovingBg && (
+                  <div className="bg-progress" role="progressbar" aria-valuenow={bgProgress ?? 0} aria-valuemin={0} aria-valuemax={100}>
+                    <div className="bg-progress__fill" style={{ width: `${bgProgress ?? 0}%` }} />
+                  </div>
+                )}
+
+                {bgRemovedDownload && !isRemovingBg ? (
+                  <p className="download-note">
+                    Saved as <strong>{bgRemovedDownload.fileName}</strong> ({bgRemovedDownload.sizeLabel}).{" "}
+                    <button
+                      className="re-download-link"
+                      onClick={() => triggerDownload(bgRemovedDownload.url, bgRemovedDownload.fileName)}
+                    >
+                      Download again
+                    </button>
+                  </p>
+                ) : !isRemovingBg ? (
+                  <p className="muted-copy" style={{ marginTop: '0.25rem' }}>
+                    Convert format or remove background entirely in your browser.
+                  </p>
+                ) : null}
               </div>
             </Panel>
 
@@ -302,6 +405,17 @@ export function App() {
                 {errorMessage ? <ErrorMessage message={errorMessage} /> : null}
               </Panel>
             )}
+          </div>
+
+          <div className="privacy-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="privacy-badge__icon">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <div className="privacy-badge__content">
+              <h4>100% Local Processing</h4>
+              <p>No backend, no uploads. Everything happens securely on your device.</p>
+            </div>
           </div>
         </aside>
       </main>

@@ -9,6 +9,7 @@ type PanelProps = PropsWithChildren<{
 type ActionButtonProps = PropsWithChildren<{
   disabled?: boolean;
   onClick?: () => void;
+  title?: string;
   tone?: "primary" | "ghost";
 }>;
 
@@ -47,9 +48,9 @@ export function Panel({ children, eyebrow, glow = true, title }: PanelProps) {
   );
 }
 
-export function ActionButton({ children, disabled, onClick, tone = "primary" }: ActionButtonProps) {
+export function ActionButton({ children, disabled, onClick, title, tone = "primary" }: ActionButtonProps) {
   return (
-    <button className={`ic-btn ic-btn--${tone}`} disabled={disabled} onClick={onClick} type="button">
+    <button className={`ic-btn ic-btn--${tone}`} disabled={disabled} onClick={onClick} title={title} type="button">
       {children}
     </button>
   );
