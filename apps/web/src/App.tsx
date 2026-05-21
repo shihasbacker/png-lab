@@ -415,10 +415,19 @@ export function App() {
             <div className="privacy-badge__content">
               <h4>100% Local Processing</h4>
               <p>No backend, no uploads. Everything happens securely on your device.</p>
+              <p className="privacy-badge__disclaimer">
+                * The AI background removal model is downloaded and cached in your browser on first use. It is automatically managed and can be cleared via your browser's history settings.
+              </p>
             </div>
           </div>
         </aside>
       </main>
+
+      <footer className="app-footer">
+        <p>
+          Made by <a href="https://github.com/shihasbacker" target="_blank" rel="noopener noreferrer">Shihas Backer</a>
+        </p>
+      </footer>
     </div>
   );
 }
