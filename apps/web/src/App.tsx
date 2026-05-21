@@ -416,7 +416,7 @@ export function App() {
               <h4>100% Local Processing</h4>
               <p>No backend, no uploads. Everything happens securely on your device.</p>
               <p className="privacy-badge__disclaimer">
-                * The AI background removal model is downloaded and cached in your browser on first use. It is automatically managed and can be cleared via your browser's history settings.
+                * The AI background removal model is downloaded and cached in your browser on <strong>first use</strong>. It is automatically managed and can be cleared via your browser's history settings.
               </p>
             </div>
           </div>
