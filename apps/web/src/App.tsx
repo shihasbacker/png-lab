@@ -291,7 +291,7 @@ export function App() {
           <div className="hero__aside hero__aside--graphic">
             <div className="hero__graphic-glow"></div>
             <img 
-              src="/hero-graphic.png" 
+              src={`${import.meta.env.BASE_URL}hero-graphic.png`} 
               alt="High-tech 3D graphic showing a camera lens breaking out of a dark transparency grid, representing background removal and image conversion." 
               className="hero__graphic-image"
             />
