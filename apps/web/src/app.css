@@ -82,7 +82,7 @@ img {
   display: grid;
   gap: 2rem;
   grid-template-columns: 1fr auto;
-  align-items: end;
+  align-items: center;
 }
 
 .hero__lead h1 {
@@ -96,7 +96,7 @@ img {
   max-width: 20ch;
 }
 
-.hero__lead p {
+.hero__lead p:not(.hero__eyebrow) {
   margin: 1.25rem 0 0;
   max-width: 48rem;
   color: var(--ic-text-secondary);
@@ -123,6 +123,30 @@ img {
   background: var(--ic-panel);
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.hero__aside--graphic {
+  position: relative;
+  right: 1.5rem;
+}
+
+.hero__graphic-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(138, 43, 226, 0.15) 0%, transparent 70%);
+  filter: blur(20px);
+  z-index: -1;
+}
+
+.hero__graphic-image {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  -webkit-mask-image: radial-gradient(ellipse at center, black 45%, transparent 75%);
+  mask-image: radial-gradient(ellipse at center, black 45%, transparent 75%);
+  transform: scale(1.15) rotate(-2deg);
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+  pointer-events: none;
 }
 
 .workspace {
@@ -234,6 +258,13 @@ img {
     align-items: flex-start;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .hero__aside--graphic {
+    right: 0;
+    margin-top: 1rem;
+    justify-content: center;
+    width: 100%;
   }
 }
 

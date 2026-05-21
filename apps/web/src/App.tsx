@@ -279,19 +279,22 @@ export function App() {
       <div className="app-shell__glow app-shell__glow--bottom" />
 
       <header className="hero">
-        <p className="hero__eyebrow">PNG Lab - Browser-based image tools</p>
         <div className="hero__grid">
           <div className="hero__lead">
+            <p className="hero__eyebrow">PNG Lab - Browser-based image tools</p>
             <h1>Free PNG converter and background remover.</h1>
             <p>
               A local-first image converter with zero uploads. Convert to PNG and remove backgrounds entirely in your browser. Fast, private, and secure.
             </p>
           </div>
 
-          <div className="hero__aside">
-            <p>Static deploy</p>
-            <p>No backend</p>
-            <p>PNG-first</p>
+          <div className="hero__aside hero__aside--graphic">
+            <div className="hero__graphic-glow"></div>
+            <img 
+              src="/hero-graphic.png" 
+              alt="High-tech 3D graphic showing a camera lens breaking out of a dark transparency grid, representing background removal and image conversion." 
+              className="hero__graphic-image"
+            />
           </div>
         </div>
       </header>
