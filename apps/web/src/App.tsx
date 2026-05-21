@@ -279,13 +279,12 @@ export function App() {
       <div className="app-shell__glow app-shell__glow--bottom" />
 
       <header className="hero">
-        <p className="hero__eyebrow">Darkroom / Browser-only PNG lab</p>
+        <p className="hero__eyebrow">PNG Lab - Browser-based image tools</p>
         <div className="hero__grid">
           <div className="hero__lead">
-            <h1>Convert image and SVG uploads into crisp PNG exports.</h1>
+            <h1>Free PNG converter and background remover.</h1>
             <p>
-              A local-first converter with zero uploads, a dramatic low-light interface, and a single focused
-              workflow built for fast handoff from source to PNG.
+              A local-first image converter with zero uploads. Convert to PNG and remove backgrounds entirely in your browser. Fast, private, and secure.
             </p>
           </div>
 
