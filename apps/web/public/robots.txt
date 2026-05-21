@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shihasbacker.github.io/png-lab/sitemap.xml
