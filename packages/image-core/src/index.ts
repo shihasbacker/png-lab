@@ -588,6 +588,9 @@ export function getConversionErrorMessage(error: unknown) {
   }
 
   if (error instanceof Error) {
+    if (error.message.includes("Failed to fetch")) {
+      return "Failed to fetch. Please upload the image again.";
+    }
     return error.message;
   }
 
